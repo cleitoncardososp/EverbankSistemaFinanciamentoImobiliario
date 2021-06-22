@@ -1,0 +1,17 @@
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\bin\Debug\net5.0\Infraestrutura.deps.json
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\bin\Debug\net5.0\Infraestrutura.dll
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\bin\Debug\net5.0\ref\Infraestrutura.dll
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\bin\Debug\net5.0\Infraestrutura.pdb
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\bin\Debug\net5.0\Aplicacao.dll
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\bin\Debug\net5.0\Dominio.dll
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\bin\Debug\net5.0\Aplicacao.pdb
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\bin\Debug\net5.0\Dominio.pdb
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\obj\Debug\net5.0\Infraestrutura.csprojAssemblyReference.cache
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\obj\Debug\net5.0\Infraestrutura.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\obj\Debug\net5.0\Infraestrutura.AssemblyInfoInputs.cache
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\obj\Debug\net5.0\Infraestrutura.AssemblyInfo.cs
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\obj\Debug\net5.0\Infraestrutura.csproj.CoreCompileInputs.cache
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\obj\Debug\net5.0\Infraestrutura.csproj.CopyComplete
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\obj\Debug\net5.0\Infraestrutura.dll
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\obj\Debug\net5.0\ref\Infraestrutura.dll
+C:\Users\Cleiton\Desktop\New\everbank.sistema.financiamento\src\everbank.sistema.financiamento.Infraestrutura\obj\Debug\net5.0\Infraestrutura.pdb

@@ -1,0 +1,290 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Servico\\Servico.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Aplicacao\\Aplicacao.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Aplicacao\\Aplicacao.csproj",
+        "projectName": "Aplicacao",
+        "projectPath": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Aplicacao\\Aplicacao.csproj",
+        "packagesPath": "C:\\Users\\Cleiton\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Aplicacao\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Cleiton\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Dominio\\Dominio.csproj": {
+                "projectPath": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Dominio\\Dominio.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.Extensions.Logging.Console": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "mediatR": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Dominio\\Dominio.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Dominio\\Dominio.csproj",
+        "projectName": "Dominio",
+        "projectPath": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Dominio\\Dominio.csproj",
+        "packagesPath": "C:\\Users\\Cleiton\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Dominio\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Cleiton\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Infraestrutura\\Infraestrutura.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Infraestrutura\\Infraestrutura.csproj",
+        "projectName": "Infraestrutura",
+        "projectPath": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Infraestrutura\\Infraestrutura.csproj",
+        "packagesPath": "C:\\Users\\Cleiton\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Infraestrutura\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Cleiton\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Aplicacao\\Aplicacao.csproj": {
+                "projectPath": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Aplicacao\\Aplicacao.csproj"
+              },
+              "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Dominio\\Dominio.csproj": {
+                "projectPath": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Dominio\\Dominio.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.0-preview.4.21253.1, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Servico\\Servico.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Servico\\Servico.csproj",
+        "projectName": "Servico",
+        "projectPath": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Servico\\Servico.csproj",
+        "packagesPath": "C:\\Users\\Cleiton\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Servico\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\Users\\Cleiton\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net5.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net5.0": {
+            "targetAlias": "net5.0",
+            "projectReferences": {
+              "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Aplicacao\\Aplicacao.csproj": {
+                "projectPath": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Aplicacao\\Aplicacao.csproj"
+              },
+              "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Dominio\\Dominio.csproj": {
+                "projectPath": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Dominio\\Dominio.csproj"
+              },
+              "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Infraestrutura\\Infraestrutura.csproj": {
+                "projectPath": "C:\\Users\\Cleiton\\Desktop\\New\\everbank.sistema.financiamento\\src\\everbank.sistema.financiamento.Infraestrutura\\Infraestrutura.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net5.0": {
+          "targetAlias": "net5.0",
+          "dependencies": {
+            "MediatR": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "MediatR.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[9.0.0, )"
+            },
+            "Microsoft.EntityFrameworkCore": {
+              "target": "Package",
+              "version": "[6.0.0-preview.4.21253.1, )"
+            },
+            "Microsoft.EntityFrameworkCore.InMemory": {
+              "target": "Package",
+              "version": "[6.0.0-preview.4.21253.1, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[5.6.3, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.202\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}
