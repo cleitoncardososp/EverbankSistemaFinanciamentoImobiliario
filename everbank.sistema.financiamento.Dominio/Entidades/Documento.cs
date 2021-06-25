@@ -42,7 +42,7 @@ namespace Dominio.Entidades
         {
             if(String.IsNullOrEmpty(CaminhoArquivo)) // Verifica se o caminho do arquivo está vazio
             {
-                throw new DocumentoPendenteException(Nome);    
+                throw new DocumentoPendenteException("Documento Pendente de Aprovação - Nome: " + Nome);    
             }
             IsDocumentoAprovado = true;
         }

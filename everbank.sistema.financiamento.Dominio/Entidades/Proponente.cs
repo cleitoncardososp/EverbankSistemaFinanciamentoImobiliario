@@ -23,7 +23,6 @@ namespace Dominio.Entidades
         ExcecaoDominio.LancarQuando(()=>documentos==null || documentos.Count==0,"Documentos do proponente são obrigatórios");
         ExcecaoDominio.LancarQuando(()=>String.IsNullOrEmpty(nomeCompleto),"Nome Completo do proponente é obrigatório");
         ExcecaoDominio.LancarQuando(()=>String.IsNullOrEmpty(cpf),"CPF é obrigatório");
-        ExcecaoDominio.LancarQuando(()=>dataNascimento == null, "Data de Nascimento é obrigatório");
         ExcecaoDominio.LancarQuando(()=>String.IsNullOrEmpty(estadoCivil),"Estado Civil é obrigatório"); 
         ExcecaoDominio.LancarQuando(()=>rendaBruta == 0,"Renda Bruta é obrigatório");
 
@@ -50,17 +49,17 @@ namespace Dominio.Entidades
         DataNascimento = dataNascimento;
         EstadoCivil = estadoCivil;
         RendaBruta = rendaBruta;
-        PossuiAlgumaDoencaGrave = possuiAlgumaDoencaGrave;
         PossuiRestricao = possuiRestricao;
         Restricao = restricao;
+        PossuiAlgumaDoencaGrave = possuiAlgumaDoencaGrave;
     }
     
     //Método para Incluir Restrição em um proponente recebendo uma string "Motivo" como parâmetro
     public void IncluirRestricao(String motivo)
     {
         ExcecaoDominio.LancarQuando(()=>String.IsNullOrEmpty(motivo),"Motivo da Restrição é obrigatório! ");
-
-        PossuiRestricao = true;
+        
+        PossuiRestricao=true;
         Restricao = motivo;
     }
 
@@ -68,6 +67,7 @@ namespace Dominio.Entidades
     public void RemoverRestricao()
     {
         PossuiRestricao=false;
+        Restricao = null;
     }
 
     //Método para exibir uma instância de um objeto do tipo Proponente

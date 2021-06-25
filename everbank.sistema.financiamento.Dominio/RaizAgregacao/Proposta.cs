@@ -10,6 +10,7 @@ namespace Dominio.RaizAgregacao
     public class Proposta
     {
         public const int QUANTIDADE_MAXIMA_PROPONENTES = 4;
+        public const int QUANTIDADE_MINIMA_PROPONENTES = 1;
         public string IdProposta {get; private set;}
         public Imovel Imovel {get ; private set;}
         public List<Proponente> Proponentes {get; private set;}
@@ -24,7 +25,7 @@ namespace Dominio.RaizAgregacao
         public String MotivoRecusaProposta{get;private set;}
 
         //Construtor que valida se os dados estão vazios ou nullos
-        public Proposta(Imovel imovel, List<Proponente> proponentes, decimal valorEntrada, int prazoFinanciamento)
+        public Proposta(Imovel imovel, List<Proponente> proponentes, decimal valorEntrada, int prazoFinanciamento, decimal taxaJurosAnual)
         {
 
             ExcecaoDominio.LancarQuando(()=>imovel==null, "Imóvel é obrigatório!");
@@ -37,12 +38,32 @@ namespace Dominio.RaizAgregacao
             
             Imovel = imovel;
             Proponentes = proponentes;
-
             ValorEntrada = valorEntrada;
             PrazoFinanciamento = prazoFinanciamento;
-
-            TaxaJurosAnual = 0.30M;  // Taxa será carrega de um sistema externo
             IsPropostaAprovada = false;
+            TaxaJurosAnual = taxaJurosAnual;
+
+
+            //Procedimento para cálculo do valor da Proposta (RendaMinima/ValorDaPrimeiraParcela)
+            foreach (var prop in Proponentes)
+            {
+                RendaTotalProponentes += prop.RendaBruta; 
+            }
+
+            decimal valorImovel = Imovel.ValorImovel;
+            const decimal taxaRendaMinima = 30.0M /100; // CONST * Taxa para calculo da renda bruta minima 
+            decimal taxaMes = (taxaJurosAnual/12)/100;
+
+            decimal valorFinanciado = valorImovel - ValorEntrada;  // valor financiado      
+
+            decimal amortizacao = Math.Round(valorFinanciado / PrazoFinanciamento, 2); // calculo da primeira parcela
+            decimal jurosSaldoDevedor = Math.Round(taxaMes * valorFinanciado, 2);
+            decimal parcela = amortizacao + jurosSaldoDevedor; 
+
+            decimal rendaMinima = Math.Round(parcela / taxaRendaMinima);
+
+            ValorPrimeiraParcela = parcela;
+            RendaBrutaMinima = rendaMinima;
         }
 
         //Construtor utilizado pela Fábrica, para instanciação do Objeto vindo do Banco de Dados.
@@ -69,7 +90,7 @@ namespace Dominio.RaizAgregacao
 
             if(Proponentes.Count >= QUANTIDADE_MAXIMA_PROPONENTES)
             {
-                throw new PropostaNumeroMaximoProponentesException();
+                throw new PropostaNumeroMaximoProponentesException("Quantidade máxima de Proponentes atingido, impossível adicionar proponente!");
             }else
             {
                 Proponentes.Add(prop);
@@ -81,11 +102,17 @@ namespace Dominio.RaizAgregacao
         {
             ExcecaoDominio.LancarQuando(()=>prop==null, "Necessário informar um proponente para remoção! ");
             
-            var proponente = Proponentes.FirstOrDefault(item=>item.IdProponente == prop.IdProponente);
-            if(proponente!=null)
+            if(Proponentes.Count <= QUANTIDADE_MINIMA_PROPONENTES)
             {
-                Proponentes.Remove(proponente);
-            }
+                throw new PropostaNumeroMinimoProponentesException("Quantidade mínima de Proponentes atingido, impossível remover proponente!");
+            }else
+                {
+                    var proponente = Proponentes.FirstOrDefault(item=>item.IdProponente == prop.IdProponente);
+                    if(proponente!=null)
+                    {
+                        Proponentes.Remove(proponente);
+                    }
+                }
         }
 
         //Método para Alterar o Valor de Entrada da Proposta
@@ -118,53 +145,26 @@ namespace Dominio.RaizAgregacao
                 {
                     //Algum documento não foi carregado para o sistema
                     if(String.IsNullOrEmpty(documento.CaminhoArquivo))
-                        throw new DocumentoPendenteException(documento.Nome);
+                        throw new DocumentoPendenteException("Documento: " + documento.Nome + " do " + proponente.NomeCompleto + " não foi carregado no sistema!");
+
                     //Algum documento não foi aprovado
                     if(documento.IsDocumentoAprovado==false)
-                        throw new DocumentoPendenteAprovacaoException(documento.Nome);
+                        throw new DocumentoPendenteAprovacaoException("Documento: " + documento.Nome + " do " + proponente.NomeCompleto + " não foi aprovado");
                 }
-            }
-            
 
-            //Procedimento para cálculo do valor da Proposta (RendaMinima/ValorDaPrimeiraParcela)
-            decimal rendaTotal = 0;
-            foreach (var prop in Proponentes)
-            {
-                rendaTotal += prop.RendaBruta; 
-            }
-            decimal valorImovel = Imovel.ValorImovel;
-
-            const decimal taxaRendaMinima = 30.0M /100; // CONST * Taxa para calculo da renda bruta minima 
-            const decimal taxaAno = 9.2M / 100;     // CONST * Taxa ao Ano Fixada -> 9.2%
-            decimal taxaMes = Convert.ToDecimal(Math.Round((Math.Pow(1.0 + Convert.ToDouble(taxaAno), 1 / 12.0) - 1), 4)); // Taxa ao mes -> 0.74% -> 0.0074
-
-            decimal valorFinanciado = valorImovel - ValorEntrada;  // valor financiado      
-
-            decimal amortizacao = Math.Round(valorFinanciado / PrazoFinanciamento, 2); // calculo da primeira parcela
-            decimal jurosSaldoDevedor = Math.Round(taxaMes * valorFinanciado, 2);
-            decimal parcela = amortizacao + jurosSaldoDevedor; 
-
-            decimal rendaMinima = Math.Round(parcela / taxaRendaMinima);
-
-            ValorPrimeiraParcela = parcela;
-            RendaBrutaMinima = rendaMinima;
-            RendaTotalProponentes = rendaTotal;
-            
-
-            if(RendaTotalProponentes < rendaMinima)
-            {
-                throw new RendaInsuficienteException();
-            }
-            
-            foreach (var prop in Proponentes)
-            {
-                if(prop.PossuiRestricao == true)
+                if(proponente.PossuiRestricao == true)
                 {
-                    throw new ProponenteComRestricaoException(prop.NomeCompleto);
+                    throw new ProponenteComRestricaoException("Proponente: " + proponente.NomeCompleto + " com restrição!");
                 }
+            }            
+
+            if(RendaTotalProponentes < RendaBrutaMinima)
+            {
+                throw new RendaInsuficienteException("Renda Total dos Proponentes é insuficiente!");
             }
 
             IsPropostaAprovada=true; 
+            MotivoRecusaProposta = null;
             DataAnaliseProposta = DateTime.Now;
         }
 
@@ -172,6 +172,7 @@ namespace Dominio.RaizAgregacao
         public void RejeitarProposta(String motivo)
         {
             IsPropostaAprovada = false;
+            MotivoRecusaProposta = motivo;
             DataAnaliseProposta = DateTime.Now;
         }
 

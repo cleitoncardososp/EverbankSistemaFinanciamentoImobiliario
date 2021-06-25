@@ -34,6 +34,7 @@ namespace Aplicacao.CasosDeUso.PropostaCase
             return Task.FromResult(new AlterarPrazoFinanciamentoResponse(){Status=0, Data = proposta});
         }
     }
+    
     public class AlterarPrazoFinanciamentoResponse
     {
         public int Status{get;set;}

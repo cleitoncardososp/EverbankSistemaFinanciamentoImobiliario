@@ -15,6 +15,13 @@ namespace Infraestrutura.Repositorios
         public IProponenteFabrica ProponenteFabrica {get; set;}
         public IDocumentoFabrica DocumentoFabrica {get; set;}
 
+        public ProponenteRepositorio(ApplicationContext context, IProponenteFabrica proponenteFabrica, IDocumentoFabrica documentoFabrica)
+        {
+            Context = context;
+            ProponenteFabrica = proponenteFabrica;
+            DocumentoFabrica = documentoFabrica;
+        }
+
         //Comparar a lista de documentos do repositorio com a lista de documentos do proponente e realizar a devida atualização
         public void Atualizar(Proponente prop)
         {
@@ -74,17 +81,16 @@ namespace Infraestrutura.Repositorios
         {
             ProponenteDTO proponenteDto = Context.Proponentes.Where(c=>c.IdProposta == idProposta && c.IdProponente == idProponente).FirstOrDefault();
 
+            List<DocumentoDTO> listaDocumentosDto = Context.Documentos.Where(p => p.IdProponente == idProponente).ToList(); 
+            List<Documento> listaDocumentos = new List<Documento>();
 
-            List<DocumentoDTO> documentoDto = Context.Documentos.Where(p => p.IdProponente == idProponente).ToList(); 
-            List<Documento> documento = new List<Documento>();
-
-            foreach (var item in documentoDto)
+            foreach (var item in listaDocumentosDto)
             {
                 Documento doc = DocumentoFabrica.CriarInstancia(item.IdDocumento, item.Nome, item.Descricao, item.CaminhoArquivo, item.IsDocumentoAprovado, item.MotivoRecusaAprovacao);
-                documento.Add(doc);
+                listaDocumentos.Add(doc);
             }
 
-            Proponente proponente = ProponenteFabrica.CriarInstancia(proponenteDto.IdProponente, documento, proponenteDto.NomeCompleto, proponenteDto.Cpf, proponenteDto.DataNascimento, proponenteDto.EstadoCivil, proponenteDto.RendaBruta, proponenteDto.PossuiAlgumaDoencaGrave, proponenteDto.PossuiRestricao, proponenteDto.Restricao);
+            Proponente proponente = ProponenteFabrica.CriarInstancia(proponenteDto.IdProponente, listaDocumentos, proponenteDto.NomeCompleto, proponenteDto.Cpf, proponenteDto.DataNascimento, proponenteDto.EstadoCivil, proponenteDto.RendaBruta, proponenteDto.PossuiAlgumaDoencaGrave, proponenteDto.PossuiRestricao, proponenteDto.Restricao);
 
             return proponente;
         }

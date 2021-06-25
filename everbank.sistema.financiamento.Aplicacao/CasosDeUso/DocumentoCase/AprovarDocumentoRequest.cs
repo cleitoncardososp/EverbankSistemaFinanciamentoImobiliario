@@ -46,7 +46,7 @@ namespace Aplicacao.CasosDeUso.DocumentoCase
             }
             catch(Exception ex)
             {
-                Logger.LogError("Erro ao aprovar um documento",ex);
+                Logger.LogError("Erro ao aprovar um documento", ex);
                 return Task.FromResult(new AprovarDocumentoResponse(){Status=1});
             }
         }

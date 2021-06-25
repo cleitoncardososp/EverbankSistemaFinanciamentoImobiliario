@@ -10,7 +10,7 @@ namespace Aplicacao.CasosDeUso.ProponenteCase
     public class RemoverRestricaoProponenteRequest:IRequest<RemoverRestricaoProponenteResponse>
     {
         public String IdProposta {get; set;}
-        public String IdProponente {get; private set;}
+        public String IdProponente {get; set;}
     }
 
     public class RemoverRestricaoProponenteRequestHandler : IRequestHandler<RemoverRestricaoProponenteRequest, RemoverRestricaoProponenteResponse>
@@ -30,6 +30,8 @@ namespace Aplicacao.CasosDeUso.ProponenteCase
             Proponente proponente = ProponenteRepositorio.Consultar(request.IdProposta,request.IdProponente); 
 
             proponente.RemoverRestricao();
+
+            ProponenteRepositorio.Atualizar(proponente);
 
             return Task.FromResult(new RemoverRestricaoProponenteResponse(){Status=0, Data = proponente});
         }

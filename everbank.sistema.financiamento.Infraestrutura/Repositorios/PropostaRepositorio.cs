@@ -38,18 +38,27 @@ namespace Infraestrutura.Repositorios
         {
             PropostaDTO propostaDto = Context.Proposta.Where(p => p.IdProposta == idProposta).FirstOrDefault();
 
+            //Não encontrou a proposta digitada, lança exceção. TOFIX: PropostaNaoLocalizadaException
+            if(propostaDto == null)
+            {
+                throw new Exception("Proposta Não localizada");
+            }
+
             //Proponentes
             List<ProponenteDTO> listaProponenteDto = Context.Proponentes.Where(c=>c.IdProposta == idProposta).Include(c=>c.Documentos).ToList();
             List<Proponente> listaProponentes = new List<Proponente>();
+            
+            
             foreach (var item in listaProponenteDto)
             {
+                //Documentos
                 List<Documento> listaDocumentos = new List<Documento>();
                 foreach (var doc in item.Documentos)
                 {
                     Documento documento = DocumentoFabrica.CriarInstancia(doc.IdDocumento, doc.Nome, doc.Descricao, doc.CaminhoArquivo, doc.IsDocumentoAprovado, doc.MotivoRecusaAprovacao);
                     listaDocumentos.Add(documento);
                 }
-                Proponente prop = ProponenteFabrica.CriarInstancia(item.IdProponente, listaDocumentos, item.NomeCompleto, item.Cpf, item.DataNascimento, item.EstadoCivil, item.RendaBruta, item.PossuiAlgumaDoencaGrave, item.PossuiAlgumaDoencaGrave, item.Restricao);
+                Proponente prop = ProponenteFabrica.CriarInstancia(item.IdProponente, listaDocumentos, item.NomeCompleto, item.Cpf, item.DataNascimento, item.EstadoCivil, item.RendaBruta, item.PossuiAlgumaDoencaGrave, item.PossuiRestricao,item.Restricao);
                 listaProponentes.Add(prop);
             }
 
@@ -69,16 +78,117 @@ namespace Infraestrutura.Repositorios
         {
             PropostaDTO propostaToUpdate = Context.Proposta.Where(c => c.IdProposta == proposta.IdProposta).FirstOrDefault();
 
-                propostaToUpdate.IdProposta = proposta.IdProposta;
-                propostaToUpdate.ValorEntrada = proposta.ValorEntrada;
-                propostaToUpdate.PrazoFinanciamento = proposta.PrazoFinanciamento;
-                propostaToUpdate.TaxaJurosAnual = proposta.TaxaJurosAnual;
-                propostaToUpdate.IsPropostaAprovada = proposta.IsPropostaAprovada;
-                propostaToUpdate.ValorPrimeiraParcela = proposta.ValorPrimeiraParcela;
-                propostaToUpdate.RendaBrutaMinima = proposta.RendaBrutaMinima;
-                propostaToUpdate.RendaTotalProponentes = proposta.RendaTotalProponentes;
-                propostaToUpdate.DataAnaliseProposta = proposta.DataAnaliseProposta;
-                propostaToUpdate.MotivoRecusaProposta = proposta.MotivoRecusaProposta;
+            // propostaToUpdate -> proposta antiga (banco)
+            // proposta         -> proposta nova (recebida pela função)
+
+            //verifica se a qtd de proponentes no Banco é menor do que a qtd de proponentes na proposta recebida para atualizar
+            //se for menor no banco quer dizer que foi adicionado um novo proponente, que ainda não existe no banco
+            if(propostaToUpdate.Proponentes.Count() < proposta.Proponentes.Count())
+            {
+                //percorre toda a lista nova, convertendo todos pra DTO e depois insere cada um no banco
+                foreach (var item in proposta.Proponentes)
+                {
+                    //se algum proponente (novo) não existir no banco, insere no banco.
+                    if(proposta.Proponentes.LastOrDefault().Equals(item))
+                    {
+                    //converte para DTO 
+                        ProponenteDTO proponenteDto = new ProponenteDTO();
+                            proponenteDto.IdProponente = item.IdProponente;
+                            proponenteDto.IdProposta = proposta.IdProposta; //relacionamento
+                            proponenteDto.NomeCompleto = item.NomeCompleto;
+                            proponenteDto.Cpf = item.Cpf;
+                            proponenteDto.DataNascimento = item.DataNascimento;
+                            proponenteDto.EstadoCivil = item.EstadoCivil;
+                            proponenteDto.RendaBruta = item.RendaBruta;
+                            proponenteDto.PossuiAlgumaDoencaGrave = item.PossuiAlgumaDoencaGrave;
+                            proponenteDto.PossuiRestricao = item.PossuiRestricao;
+                            proponenteDto.Restricao = item.Restricao;
+
+                        foreach (var doc in item.Documentos)
+                        {
+                            DocumentoDTO documentoDto = new DocumentoDTO();
+                                documentoDto.IdDocumento = doc.IdDocumento;
+                                documentoDto.IdProponente = proponenteDto.IdProponente; // relacionamento
+                                documentoDto.Nome = doc.Nome;
+                                documentoDto.Descricao = doc.Descricao;
+                                documentoDto.CaminhoArquivo = doc.CaminhoArquivo;
+                                documentoDto.IsDocumentoAprovado = doc.IsDocumentoAprovado;
+                                documentoDto.MotivoRecusaAprovacao = doc.MotivoRecusaAprovacao;
+
+                                Context.Documentos.Add(documentoDto);
+
+                                Context.SaveChanges();
+                        }
+
+                        Context.Proponentes.Add(proponenteDto);
+
+                        Context.SaveChanges();
+                    }
+                }
+            }
+
+            //verifica se a qtd de proponentes no Banco é maior do que a qtd de proponentes na proposta recebida para atualizar
+            //se for maior no banco quer dizer que foi removido um proponente, existente no banco 
+            if(propostaToUpdate.Proponentes.Count() > proposta.Proponentes.Count())
+            {
+                foreach (var proponenteBanco in propostaToUpdate.Proponentes)
+                {
+                    foreach (var doc in proponenteBanco.Documentos)
+                    {
+                        Context.Documentos.Remove(doc);
+                    }
+
+                    Context.Proponentes.Remove(proponenteBanco);
+                }
+                
+                Context.SaveChanges();
+
+                foreach (var proponenteProposta in proposta.Proponentes)
+                {
+                    ProponenteDTO proponenteDto = new ProponenteDTO();
+                            proponenteDto.IdProponente = proponenteProposta.IdProponente;
+                            proponenteDto.IdProposta = proposta.IdProposta; //relacionamento
+                            proponenteDto.NomeCompleto = proponenteProposta.NomeCompleto;
+                            proponenteDto.Cpf = proponenteProposta.Cpf;
+                            proponenteDto.DataNascimento = proponenteProposta.DataNascimento;
+                            proponenteDto.EstadoCivil = proponenteProposta.EstadoCivil;
+                            proponenteDto.RendaBruta = proponenteProposta.RendaBruta;
+                            proponenteDto.PossuiAlgumaDoencaGrave = proponenteProposta.PossuiAlgumaDoencaGrave;
+                            proponenteDto.PossuiRestricao = proponenteProposta.PossuiRestricao;
+                            proponenteDto.Restricao = proponenteProposta.Restricao;
+
+                        foreach (var doc in proponenteProposta.Documentos)
+                        {
+                            DocumentoDTO documentoDto = new DocumentoDTO();
+                                documentoDto.IdDocumento = doc.IdDocumento;
+                                documentoDto.IdProponente = proponenteDto.IdProponente; // relacionamento
+                                documentoDto.Nome = doc.Nome;
+                                documentoDto.Descricao = doc.Descricao;
+                                documentoDto.CaminhoArquivo = doc.CaminhoArquivo;
+                                documentoDto.IsDocumentoAprovado = doc.IsDocumentoAprovado;
+                                documentoDto.MotivoRecusaAprovacao = doc.MotivoRecusaAprovacao;
+
+                                Context.Documentos.Add(documentoDto);
+
+                                Context.SaveChanges();
+                        }
+
+                        Context.Proponentes.Add(proponenteDto);
+
+                        Context.SaveChanges();
+                }
+            }   
+                        
+            propostaToUpdate.IdProposta = proposta.IdProposta;
+            propostaToUpdate.ValorEntrada = proposta.ValorEntrada;
+            propostaToUpdate.PrazoFinanciamento = proposta.PrazoFinanciamento;
+            propostaToUpdate.TaxaJurosAnual = proposta.TaxaJurosAnual;
+            propostaToUpdate.IsPropostaAprovada = proposta.IsPropostaAprovada;
+            propostaToUpdate.ValorPrimeiraParcela = proposta.ValorPrimeiraParcela;
+            propostaToUpdate.RendaBrutaMinima = proposta.RendaBrutaMinima;
+            propostaToUpdate.RendaTotalProponentes = proposta.RendaTotalProponentes;
+            propostaToUpdate.DataAnaliseProposta = proposta.DataAnaliseProposta;
+            propostaToUpdate.MotivoRecusaProposta = proposta.MotivoRecusaProposta;
 
             Context.Proposta.Update(propostaToUpdate);
 
@@ -127,7 +237,6 @@ namespace Infraestrutura.Repositorios
                 Context.Imovel.Add(imovelDto);
 
             //ProponenteDto
-           
             List<DocumentoDTO> listaDocumentoDto = new List<DocumentoDTO>();
 
                 foreach (var prop in proposta.Proponentes)
@@ -153,7 +262,7 @@ namespace Infraestrutura.Repositorios
                     foreach (var item in prop.Documentos)
                     {
                         DocumentoDTO documentoDto = new DocumentoDTO();
-                            documentoDto.IdDocumento = item.IdDocumento; 
+                            documentoDto.IdDocumento = Guid.NewGuid().ToString(); 
                             documentoDto.Nome = item.Nome; 
                             documentoDto.Descricao = item.Descricao;
                             documentoDto.CaminhoArquivo = item.CaminhoArquivo;
@@ -163,8 +272,8 @@ namespace Infraestrutura.Repositorios
                             //Relacionamento Documento <-> Proponente
                             documentoDto.IdProponente = proponenteDto.IdProponente;
 
-                            //Context.Documentos.Add(documentoDto);
-                            listaDocumentoDto.Add(documentoDto);
+                            Context.Documentos.Add(documentoDto);
+                            //listaDocumentoDto.Add(documentoDto);
                     }
                 }
 

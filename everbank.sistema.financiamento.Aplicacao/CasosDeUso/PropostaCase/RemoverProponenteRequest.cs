@@ -34,13 +34,9 @@ namespace Aplicacao.CasosDeUso.PropostaCase
 
             Proponente proponente = ProponenteRepositorio.Consultar(request.IdProposta, request.IdProponente); 
 
-            proposta.Proponentes.Remove(proponente);
+            proposta.RemoverProponente(proponente);
 
             PropostaRepositorio.Atualizar(proposta);
-
-            
-
-            //ServicoEmissaoContrato.EmitirContratoProposta(proposta);
 
             return Task.FromResult(new RemoverProponenteResponse(){Status=0 , Data = proposta});
         }

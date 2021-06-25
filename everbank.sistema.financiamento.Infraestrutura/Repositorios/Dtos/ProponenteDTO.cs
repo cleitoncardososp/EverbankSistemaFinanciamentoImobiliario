@@ -46,7 +46,6 @@ namespace Infraestrutura.Repositorios.Dtos
         [ForeignKey("IdProposta")]
         public virtual PropostaDTO Proposta{get;set;}
 
-        [ForeignKey("IdDocumentos")]
-        public virtual List<DocumentoDTO> Documentos{get;set;}
+        public List<DocumentoDTO> Documentos{get;set;}
     }
 }

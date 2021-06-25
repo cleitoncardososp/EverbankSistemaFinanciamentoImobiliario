@@ -10,7 +10,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Dominio.Excecoes;
 using Aplicacao.CasosDeUso.ProponenteCase;
-using Newtonsoft.Json;
 
 namespace Servico.Controllers
 {
@@ -63,59 +62,55 @@ namespace Servico.Controllers
            }
         }
 
-        //Carregar Arquivo 
+        //Carregar Arquivo ✅
         [HttpPost("{IdProposta}/proponente/{IdProponente}/documento/{IdDocumento}/upload")]   
         public async Task<ActionResult> CarregarArquivo([FromRoute]string IdProposta, [FromRoute]string IdProponente, [FromRoute]string IdDocumento, [FromForm]IFormFile arquivo)
         {
-            _logger.LogInformation("Recebido Post de upload de arquivo");
-                if(arquivo.Length > 0)
+            if(arquivo.Length > 0)
+            {
+                try
                 {
-                    try
-                    {
-                        _logger.LogInformation("Início do processo de request");
-                        CarregarArquivoRequest carregarArquivoRequest = new CarregarArquivoRequest();
-                        carregarArquivoRequest.IdProposta = IdProposta;
-                        carregarArquivoRequest.IdProponente = IdProponente;
-                        carregarArquivoRequest.IdDocumento = IdDocumento;
+                    _logger.LogInformation("Início do processo de request");
+                    CarregarArquivoRequest carregarArquivoRequest = new CarregarArquivoRequest();
+                    carregarArquivoRequest.IdProposta = IdProposta;
+                    carregarArquivoRequest.IdProponente = IdProponente;
+                    carregarArquivoRequest.IdDocumento = IdDocumento;
 
-                        MemoryStream memoryStream = new MemoryStream();
-                        arquivo.CopyTo(memoryStream);
-                        memoryStream.Dispose();
+                    MemoryStream memoryStream = new MemoryStream();
+                    arquivo.CopyTo(memoryStream);
+                    memoryStream.Dispose();
 
-                        carregarArquivoRequest.NomeArquivo = arquivo.FileName; 
-                        carregarArquivoRequest.ConteudoArquivo = memoryStream.ToArray();
+                    carregarArquivoRequest.NomeArquivo = arquivo.FileName; 
+                    carregarArquivoRequest.ConteudoArquivo = memoryStream.ToArray();
 
-                        CarregarArquivoResponse response = await Mediator.Send(carregarArquivoRequest);
-                        _logger.LogInformation("Caso de uso retornado com sucesso. Retorno do caso de uso Carregar Arquivo", response);
-                        return Ok(response);
-                    }
-                    catch (ExcecaoDominio ex)
-                    {
-                        _logger.LogInformation("Exceção de domínio ao rodar o caso de uso Carregar Arquivo");
-                        return BadRequest(ex.Message);
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogWarning("Erro não tratado", ex);
-                        return BadRequest(ex.Message);
-                    }
-                }else
-                    {
-                        _logger.LogWarning("Arquivo não recebido");
-                        return BadRequest();
-                    }                
+                    CarregarArquivoResponse response = await Mediator.Send(carregarArquivoRequest);
+                    _logger.LogInformation("Caso de uso retornado com sucesso. Retorno do caso de uso Carregar Arquivo", response);
+                    return Ok(response);
+                }
+                catch (ExcecaoDominio ex)
+                {
+                    _logger.LogInformation("Exceção de domínio ao rodar o caso de uso Carregar Arquivo");
+                    return BadRequest(ex.Message);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning("Erro não tratado", ex);
+                    return BadRequest(ex.Message);
+                }
+            }else
+                {
+                    _logger.LogWarning("Arquivo não recebido");
+                    return BadRequest();
+                }                
         }
 
-        //Aprovar Documento
+        //Aprovar Documento ✅
         [HttpPost("{IdProposta}/proponente/{IdProponente}/documento/{IdDocumento}/aprovardocumento")]
         public async Task<ActionResult> AprovarDocumento([FromRoute]AprovarDocumentoRequest request)
         {
-            _logger.LogInformation("Recebido Post de Aprovação de Documento", request);
-            if(ModelState.IsValid)
-            {
-                _logger.LogInformation("Modelo válido, chamando Caso de Uso Aprovar Documento.");
                 try
                 {
+                    _logger.LogInformation("Chamando Caso de Uso Aprovar Documento.");
                     AprovarDocumentoResponse response = await Mediator.Send(request);
                     _logger.LogInformation("Caso de uso retornado com sucesso. Retorno do caso de uso Aprovar Documento", response);
                     return Ok(response);
@@ -130,114 +125,92 @@ namespace Servico.Controllers
                     _logger.LogWarning("Erro não tratado Aprovar Documento", ex);
                     return BadRequest(ex.Message);
                 }
-            }else
-                {
-                    _logger.LogInformation("Modelo Recebido Inválido Aprovar Documento", ModelState);
-                    return BadRequest(ModelState);
-                }
         }
 
-        //Recusar Documento
+        //Recusar Documento ✅
         [HttpPost("{IdProposta}/proponente/{IdProponente}/documento/{IdDocumento}/recusardocumento")]
-        public async Task<ActionResult> RecusarDocumento([FromBody]RecusarDocumentoRequest request)
+        public async Task<ActionResult> RecusarDocumento([FromRoute]string idProposta, [FromRoute]string idProponente, [FromRoute]string idDocumento, [FromBody]RecusarDocumentoRequest request)
         {
-            _logger.LogInformation("Recebido Post de Recusar Documento", request);
-            if(ModelState.IsValid)
+            _logger.LogInformation("Chamando Caso de Uso Recusar Documento.");
+            try
             {
-                _logger.LogInformation("Modelo válido, chamando Caso de Uso Recusar Documento.");
-                try
-                {
-                    RecusarDocumentoResponse response = await Mediator.Send(request);
-                    _logger.LogInformation("Caso de uso retornado com sucesso. Retorno do caso de uso Recusar Documento", response);
-                    return Ok(response);
-                }
-                catch (ExcecaoDominio ex)
-                {
-                    _logger.LogWarning("Exceção de domínio ao rodar o caso de uso Recusar Documento", ex);
-                    return BadRequest(ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning("Erro não tratado ao Recusar Documento", ex);
-                    return BadRequest(ex.Message);
-                }
-            }else
-                {
-                    _logger.LogInformation("Modelo Recebido Inválido Recusar Documento", ModelState);
-                    return BadRequest(ModelState);
-                }
-        }
-
-        //Incluir Restrição
-        [HttpPost("{IdProposta}/proponente/{IdProponente}/incluirrestricaoproponente")]
-        public async Task<ActionResult> IncluirRestricao([FromBody]IncluirRestricaoProponenteRequest request)
-        {
-            _logger.LogInformation("Modelo válido, chamando Caso de Uso Incluir Restricao Proponente");
-            if(ModelState.IsValid)
-            {
-                try
-                {
-                    IncluirRestricaoProponenteResponse response = await Mediator.Send(request);
-                    _logger.LogInformation("Caso de uso retornado com sucesso. Retorno do caso de uso Incluir Restricao Proponente", response);
-                    return Ok(response);
-                }
-                catch(ExcecaoDominio ex)
-                {
-                    _logger.LogWarning("Exceção de domínio ao rodar o caso de uso Incluir Restrição Proponente", ex);
-                    return BadRequest(ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogWarning("Erro não tratado ao Incluir Restrição Proponente", ex);
-                    return BadRequest(ex.Message);
-                }
-            }else
-                {
-                    _logger.LogInformation("Modelo Recebido Inválido Recusar Documento", ModelState);
-                    return BadRequest(ModelState);
-                }
-        }
-
-        //Remover Restricao Proponente
-        [HttpPost("{IdProposta}/proponente/{IdProponente}/removerrestricaoproponente")]
-        public async Task<ActionResult> RemoverRestricao([FromRoute]RemoverRestricaoProponenteRequest request)
-        {
-            _logger.LogInformation("Modelo válido, chamando Caso de Uso Remover Restricao Proponente");
-            if(ModelState.IsValid)
-            {
-                try
-                {
-                    RemoverRestricaoProponenteResponse response = await Mediator.Send(request);
-                    _logger.LogInformation("Caso de uso retornado com sucesso. Retorno do caso de uso Remover Restrição Proponente", response);
-                    return Ok(response);
-                }
-                catch (ExcecaoDominio ex)
-                {
-                    _logger.LogWarning("Exceção de domínio ao rodar o caso de uso Remover Restrição Proponente", ex);
-                    return BadRequest(ex.Message);
-                }
-                catch(Exception ex)
-                {
-                    _logger.LogWarning("Erro não tratado ao Remover Restricao Proponente", ex);
-                    return BadRequest(ex.Message);
-                }
+                request.IdProposta = idProposta;
+                request.IdProponente = idProponente;
+                request.IdDocumento = idDocumento;
+                RecusarDocumentoResponse response = await Mediator.Send(request);
+                _logger.LogInformation("Caso de uso retornado com sucesso. Retorno do caso de uso Recusar Documento", response);
+                return Ok(response);
             }
-            else
+            catch (ExcecaoDominio ex)
             {
-                _logger.LogInformation("Modelo Recebido Inválido Remover Restricao Proponente", ModelState);
-                return BadRequest(ModelState);                    
+                _logger.LogWarning("Exceção de domínio ao rodar o caso de uso Recusar Documento", ex);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Erro não tratado ao Recusar Documento", ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //Incluir Restrição ✅
+        [HttpPost("{IdProposta}/proponente/{IdProponente}/incluirrestricaoproponente")]
+        public async Task<ActionResult> IncluirRestricao([FromRoute]string IdProposta, [FromRoute]string IdProponente, [FromBody]IncluirRestricaoProponenteRequest request)
+        {
+            try
+            {
+                request.IdProposta = IdProposta;
+                request.IdProponente = IdProponente;
+                _logger.LogInformation("Chamando Caso de Uso Incluir Restricao Proponente");
+                IncluirRestricaoProponenteResponse response = await Mediator.Send(request);
+                _logger.LogInformation("Caso de uso retornado com sucesso. Retorno do caso de uso Incluir Restricao Proponente", response);
+                return Ok(response);
+            }
+            catch(ExcecaoDominio ex)
+            {
+                _logger.LogWarning("Exceção de domínio ao rodar o caso de uso Incluir Restrição Proponente", ex);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning("Erro não tratado ao Incluir Restrição Proponente", ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
+        //Remover Restricao Proponente ✅
+        [HttpPost("{IdProposta}/proponente/{IdProponente}/removerrestricaoproponente")]
+        public async Task<ActionResult> RemoverRestricao([FromRoute]string IdProposta, [FromRoute]string IdProponente, [FromBody]RemoverRestricaoProponenteRequest request)
+        {
+            try
+            {
+                _logger.LogInformation("Chamando Caso de Uso Remover Restricao Proponente");
+                request.IdProposta = IdProposta;
+                request.IdProponente = IdProponente;
+                RemoverRestricaoProponenteResponse response = await Mediator.Send(request);
+                _logger.LogInformation("Caso de uso retornado com sucesso. Retorno do caso de uso Remover Restrição Proponente", response);
+                return Ok(response);
+            }
+            catch (ExcecaoDominio ex)
+            {
+                _logger.LogWarning("Exceção de domínio ao rodar o caso de uso Remover Restrição Proponente", ex);
+                return BadRequest(ex.Message);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogWarning("Erro não tratado ao Remover Restricao Proponente", ex);
+                return BadRequest(ex.Message);
             }
         }
         
-        //Adicionar Proponente
+        //Adicionar Proponente ✅
         [HttpPost("{IdProposta}/adicionarproponente")]
-        public async Task<ActionResult> AdicionarProponente([FromRoute]AdicionarProponenteRequest request)
+        public async Task<ActionResult> AdicionarProponente([FromRoute]string IdProposta, [FromBody]AdicionarProponenteRequest request)
         {
-            _logger.LogInformation("Modelo válido, chamando Caso de Uso Adicionar Proponente");
-            if(ModelState.IsValid)
-            {
                 try
                 {
+                    _logger.LogInformation("Modelo válido, chamando Caso de Uso Adicionar Proponente");
+                    request.IdProposta = IdProposta;
                     AdicionarProponenteResponse response = await Mediator.Send(request);
                     _logger.LogInformation("Caso de uso retornado com sucesso. Retorno do caso de uso Adicionar Proponente", response);
                     return Ok(response);
@@ -252,12 +225,6 @@ namespace Servico.Controllers
                     _logger.LogWarning("Erro não tratado ao Adicionar Proponente", ex);
                     return BadRequest(ex.Message);
                 }
-            }
-            else
-            {
-                _logger.LogInformation("Modelo recebido Inválido Adicionar Proponente", ModelState);
-                return BadRequest(ModelState);
-            }
         }
 
         //Alterar Prazo de Financiamento ✅
@@ -310,7 +277,7 @@ namespace Servico.Controllers
             }
         }
 
-        //Alterar Valor de Entrada
+        //Alterar Valor de Entrada ✅
         [HttpPost("{IdProposta}/alterarvalorentrada")]
         public async Task<ActionResult> AlterarOValorDeEntrada([FromRoute]string IdProposta, [FromBody]AlterarValorEntradaRequest alterarValorEntradaRequest)
         {
@@ -335,39 +302,34 @@ namespace Servico.Controllers
             }
         }
 
-        //Aprovar Proposta
+        //Aprovar Proposta ✅
         [HttpPost("{IdProposta}/aprovarproposta")]
         public async Task<ActionResult> AprovarProposta([FromRoute]AprovarPropostaRequest request)
         {
-            _logger.LogInformation("Modelo válido, chamando caso de uso Aprovar Proposta");
-            if(ModelState.IsValid)
+            try
             {
-                try
-                {
-                    AprovarPropostaResponse response = await Mediator.Send(request);
-                    _logger.LogInformation("Caso de uso retornado com sucesso. Retorno do caso de uso Aprovar Proposta", response);
-                    return Ok(response);
-                }
-                catch (ExcecaoDominio ex)
-                {
-                    _logger.LogInformation("Exceção de domínio ao rodar o caso de uso Aprovar Proposta", ex);
-                    return BadRequest(ex.Message);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogInformation("Erro não tratado ao Aprovar Proposta", ex);
-                    return BadRequest(ex.Message);
-                }
+                AprovarPropostaResponse response = await Mediator.Send(request);
+                _logger.LogInformation("Caso de uso retornado com sucesso. Retorno do caso de uso Aprovar Proposta", response);
+                return Ok(response);
             }
-            else
+            catch (ExcecaoDominio ex)
             {
-                _logger.LogInformation("Modelo recebido inválido Aprovar Proposta", ModelState);
-                return BadRequest(ModelState);
+                _logger.LogInformation("Exceção de domínio ao rodar o caso de uso Aprovar Proposta", ex);
+                return BadRequest(ex.Message);
+            }
+            catch (RendaInsuficienteException ex)
+            {
+                _logger.LogInformation("Renda Insuficiente dos Proponentes");
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation("Erro não tratado ao Aprovar Proposta", ex);
+                return BadRequest(ex.Message);
             }
         }
 
-
-        //Consultar Proposta
+        //Consultar Proposta ✅
         [HttpPost("{IdProposta}/consultarproposta")]
         public async Task<ActionResult> ConsultarProposta([FromRoute]ConsultarPropostaRequest request)
         {
@@ -390,19 +352,14 @@ namespace Servico.Controllers
             }
         }
 
-
-        //Remover Proponente
+        //Remover Proponente ✅
         [HttpPost("{IdProposta}/proponente/{IdProponente}/removerproponente")]
-        public async Task<ActionResult> RemoverProponente ([FromRoute]string IdProposta, [FromRoute]string IdProponente)
+        public async Task<ActionResult> RemoverProponente ([FromRoute] RemoverProponenteRequest request)
         {
             try
             {
-                RemoverProponenteRequest removerProponenteRequest = new RemoverProponenteRequest();
-                removerProponenteRequest.IdProposta = IdProposta;
-                removerProponenteRequest.IdProponente = IdProponente;
-
                 _logger.LogInformation("Chamando caso de uso Remover Proponente");
-                RemoverProponenteResponse response = await Mediator.Send(removerProponenteRequest);
+                RemoverProponenteResponse response = await Mediator.Send(request);
                 _logger.LogInformation("Caso de uso retornado com sucesso. Retornado do caso de uso Remover Proponente", response);
                 return Ok(response);
             }
@@ -417,5 +374,29 @@ namespace Servico.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        //Rejeitar Proposta ✅
+        [HttpPost("{IdProposta}/rejeitarproposta")] 
+        public async Task<ActionResult> RejeitarProposta ([FromRoute]string IdProposta, [FromBody]RejeitarPropostaRequest request)
+        {
+            try
+            {
+                request.IdProposta = IdProposta;
+                RejeitarPropostaResponse response = await Mediator.Send(request);
+                return Ok(response);
+            }
+            catch(ExcecaoDominio ex)
+            {
+                _logger.LogInformation("Exceção de domínio ao rodar o Caso de Uso Rejeitar Proposta", ex);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogInformation("Erro não tratado ao Rejeitar a Proposta", ex);
+                return BadRequest(ex.Message);
+            }
+        }
+
+
     }
 }

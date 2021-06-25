@@ -110,7 +110,6 @@ namespace Aplicacao.CasosDeUso.PropostaCase
         
         public Task<CriarPropostaResponse> Handle(CriarPropostaRequest request, CancellationToken cancellationToken)
         {
-            
             try{
             Logger.LogInformation("Convertendo o ImovelRecebido do Request para o Endereco do domínio");
             Endereco endereco = new Endereco(
@@ -130,9 +129,11 @@ namespace Aplicacao.CasosDeUso.PropostaCase
                 request.ImovelRecebido.ValorImovel
             );
 
+
             Logger.LogInformation("Convertendo a lista de Documentos do request em uma lista de Documentos do domínio");
             List<Documento> listaDocuemntosOBrigatorios = ServicoDocumentosObrigatorios.BuscarDocumentosObrigatorios();
-            
+
+
             Logger.LogInformation("Convertendo a lista de Proponentes do request em uma lista de Proponentes do domínio");
             List<Proponente> listaProponentes = new List<Proponente>();
             foreach (var item in request.ProponentesRecebido)
@@ -148,10 +149,11 @@ namespace Aplicacao.CasosDeUso.PropostaCase
                 listaProponentes.Add(proponente);
             }
             
-            Logger.LogInformation("Criando a proposta do domínio");
-            Proposta proposta = new Proposta(imovel,listaProponentes,request.ValorEntrada, request.PrazoFinanciamento);
             decimal juros = ServicoTaxaDeJuros.ObterTaxaJuros();
-            proposta.AlterarTaxaJurosAnual(juros);
+            
+            Logger.LogInformation("Criando a proposta do domínio");
+            Proposta proposta = new Proposta(imovel,listaProponentes,request.ValorEntrada, request.PrazoFinanciamento, juros);
+
             
             Logger.LogInformation("Inserindo a proposta no repositorio");  
             PropostaRepositorio.InserirProposta(proposta);

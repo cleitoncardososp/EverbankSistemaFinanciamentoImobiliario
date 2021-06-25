@@ -6,6 +6,7 @@ using Dominio.Entidades;
 using Dominio.Fabricas;
 using Infraestrutura.Repositorios;
 using Infraestrutura.Repositorios.Dtos;
+using Microsoft.EntityFrameworkCore;
 
 namespace Infraestrutura.Repositorios
 {
@@ -30,19 +31,20 @@ namespace Infraestrutura.Repositorios
             Context.SaveChanges();
         }
 
-        //Recebe um documento do dominio, converte para DTO e depois atualia no repositorio
+        //Recebe um documento do dominio, pesquisa o documento que será atualizado
+        //converte para DTO e depois atualiza no repositorio
         public void Atualizar(Documento doc)
         {
-            DocumentoDTO documentoDto = new DocumentoDTO();
+            DocumentoDTO documentoToUpdate = Context.Documentos.Where(c => c.IdDocumento == doc.IdDocumento).FirstOrDefault();
 
-                documentoDto.IdDocumento = doc.IdDocumento; 
-                documentoDto.Nome = doc.Nome; 
-                documentoDto.Descricao = doc.Descricao;
-                documentoDto.CaminhoArquivo = doc.CaminhoArquivo;
-                documentoDto.IsDocumentoAprovado = doc.IsDocumentoAprovado;
-                documentoDto.MotivoRecusaAprovacao = doc.MotivoRecusaAprovacao;
+                documentoToUpdate.IdDocumento = doc.IdDocumento; 
+                documentoToUpdate.Nome = doc.Nome; 
+                documentoToUpdate.Descricao = doc.Descricao;
+                documentoToUpdate.CaminhoArquivo = doc.CaminhoArquivo;
+                documentoToUpdate.IsDocumentoAprovado = doc.IsDocumentoAprovado;
+                documentoToUpdate.MotivoRecusaAprovacao = doc.MotivoRecusaAprovacao;
             
-            Context.Documentos.Update(documentoDto);
+            Context.Documentos.Update(documentoToUpdate);
 
             Context.SaveChanges();
         }
@@ -65,11 +67,24 @@ namespace Infraestrutura.Repositorios
         }
 
         //Recebe IdProponente e IdDocumento verifica se as chaves são iguais e retorna essa instancia de um objeto do ticpo documento
-        public Documento Consultar(string IdProponente, string IdDocumento)
+        public Documento Consultar(string idProponente, string idDocumento)
         {
-            DocumentoDTO documentoDto = Context.Documentos.Where(c=>c.IdProponente == IdProponente && c.IdDocumento == IdDocumento).FirstOrDefault();
-            Documento documento = DocumentoFabrica.CriarInstancia(documentoDto.IdDocumento,documentoDto.Nome,documentoDto.Descricao,documentoDto.CaminhoArquivo,documentoDto.IsDocumentoAprovado,documentoDto.MotivoRecusaAprovacao);
-            return documento;
+            ProponenteDTO proponenteDto = Context.Proponentes.Where(c=>c.IdProponente == idProponente).Include(c=>c.Documentos).FirstOrDefault();
+            
+            if(proponenteDto == null)
+            {
+                throw new Exception ("Proponente não localizado");
+            }
+
+            foreach (var doc in proponenteDto.Documentos)
+            {
+                if(doc.IdDocumento == idDocumento)
+                {
+                    Documento documento = DocumentoFabrica.CriarInstancia(doc.IdDocumento, doc.Nome, doc.Descricao, doc.CaminhoArquivo, doc.IsDocumentoAprovado, doc.MotivoRecusaAprovacao);
+                    return documento;
+                }
+            }
+            throw new Exception ("Documento não localizado");
         }
 
         //Recebe um Documento, converte este documento para DocumentoDTO, depois adiciona no Context Documento e atualiza o banco de dados

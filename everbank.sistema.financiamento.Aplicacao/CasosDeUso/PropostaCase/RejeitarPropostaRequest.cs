@@ -7,31 +7,33 @@ using MediatR;
 
 namespace Aplicacao.CasosDeUso.PropostaCase
 {
-    public class AprovarPropostaRequest:IRequest<AprovarPropostaResponse>
+    public class RejeitarPropostaRequest : IRequest<RejeitarPropostaResponse>
     {
         public string IdProposta {get; set;}
+
+        public string Motivo {get; set;}
     }
-    public class AprovarPropostaHandler : IRequestHandler<AprovarPropostaRequest, AprovarPropostaResponse>
+    public class RejeitarPropostaHandler : IRequestHandler<RejeitarPropostaRequest, RejeitarPropostaResponse>
     {
         public IPropostaRepositorio PropostaRepositorio {get; set;}
         
-        public AprovarPropostaHandler(IPropostaRepositorio propostaRepositorio)
+        public RejeitarPropostaHandler(IPropostaRepositorio propostaRepositorio)
         {
             PropostaRepositorio = propostaRepositorio;
         }
 
-        public Task<AprovarPropostaResponse> Handle(AprovarPropostaRequest request, CancellationToken cancellationToken)
+        public Task<RejeitarPropostaResponse> Handle(RejeitarPropostaRequest request, CancellationToken cancellationToken)
         {
             Proposta proposta = PropostaRepositorio.ConsultarProposta(request.IdProposta);
 
-            proposta.AprovarProposta();
+            proposta.RejeitarProposta(request.Motivo);
 
             PropostaRepositorio.Atualizar(proposta);
 
-            return Task.FromResult(new AprovarPropostaResponse(){Status=0 , Data = proposta});
+            return Task.FromResult(new RejeitarPropostaResponse(){Status=0 , Data = proposta});
         }
     }
-    public class AprovarPropostaResponse
+    public class RejeitarPropostaResponse
     {
         public int Status{get;set;}
         public Proposta Data {get; set;}

@@ -38,7 +38,7 @@ namespace Aplicacao.CasosDeUso.PropostaCase
 
             proposta.AdicionarProponente(proponente);
 
-            PropostaRepositorio.Atualizar(proposta);
+            PropostaRepositorio.Atualizar(proposta); // verificar se um proponente foi adicionado ou removido
 
             return Task.FromResult(new AdicionarProponenteResponse(){Status=0 , Data = proposta});
         }
