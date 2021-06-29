@@ -5,6 +5,6 @@ namespace Aplicacao.Interfaces
 {
     public interface IServicoEmissaoContrato
     {
-        void EmitirContratoProposta(Proposta proposta);
+        Object EmitirContratoProposta(Proposta proposta);
     }
 }

@@ -186,9 +186,14 @@ namespace Infraestrutura.Repositorios
             propostaToUpdate.IsPropostaAprovada = proposta.IsPropostaAprovada;
             propostaToUpdate.ValorPrimeiraParcela = proposta.ValorPrimeiraParcela;
             propostaToUpdate.RendaBrutaMinima = proposta.RendaBrutaMinima;
-            propostaToUpdate.RendaTotalProponentes = proposta.RendaTotalProponentes;
+            propostaToUpdate.RendaTotalProponentes = 0;
             propostaToUpdate.DataAnaliseProposta = proposta.DataAnaliseProposta;
             propostaToUpdate.MotivoRecusaProposta = proposta.MotivoRecusaProposta;
+
+            foreach (var item in proposta.Proponentes)
+            {
+                propostaToUpdate.RendaTotalProponentes += item.RendaBruta;
+            }
 
             Context.Proposta.Update(propostaToUpdate);
 
